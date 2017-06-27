@@ -24,7 +24,8 @@ def recurrent_neural_network(x):
 
     x = tf.transpose(x, [1,0,2])
     x = tf.reshape(x, [-1, chunk_size])
-    x = tf.split(0, n_chunks, x)
+    #x = tf.split(0, n_chunks, x)
+    x = tf.split(x, n_chunks, 0)
 
     #lstm_cell = rnn_cell.BasicLSTMCell(rnn_size,state_is_tuple=True)
     #outputs, states = rnn.rnn(lstm_cell, x, dtype=tf.float32)
@@ -37,12 +38,16 @@ def recurrent_neural_network(x):
 
 def train_neural_network(x):
     prediction = recurrent_neural_network(x)
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
+    #cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y) )
     optimizer = tf.train.AdamOptimizer().minimize(cost)
     
     
     with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
+        # OLD:
+        #sess.run(tf.initialize_all_variables())
+        # NEW:
+        sess.run(tf.global_variables_initializer())
 
         for epoch in range(hm_epochs):
             epoch_loss = 0

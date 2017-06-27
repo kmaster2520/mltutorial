@@ -51,12 +51,16 @@ def convolutional_neural_network(x):
 
 def train_neural_network(x):
     prediction = convolutional_neural_network(x)
-    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
+    #cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
+    cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y) )
     optimizer = tf.train.AdamOptimizer().minimize(cost)
     
     hm_epochs = 10
     with tf.Session() as sess:
-        sess.run(tf.initialize_all_variables())
+        # OLD:
+        #sess.run(tf.initialize_all_variables())
+        # NEW:
+        sess.run(tf.global_variables_initializer()))
 
         for epoch in range(hm_epochs):
             epoch_loss = 0
